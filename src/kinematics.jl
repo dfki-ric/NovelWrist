@@ -1,5 +1,7 @@
 """
-General rotation matrices
+    Rx(ϕ::Real) / Ry(ϕ::Real) / Rz(ϕ::Real)
+
+General rotation matrices for x/ y/ z axis, respectively
 """
 function Rx(ϕ::Real)
     Rx = [1 0 0; 0 cos(ϕ) -sin(ϕ); 0 sin(ϕ) cos(ϕ)]
@@ -14,8 +16,10 @@ function Rz(ϕ::Real)
 end
 
 """
-Returns the intersection points that arise from the problem of circle-sphere
-intersection
+    circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Real}, n::Vector{<:Real}, r::Real)
+
+Returns the intersection points that arise from the problem of circle-sphere intersection that is given by
+the sphere with center 's' and radius 't' and the circle with center 'cp', radius 'r', and the vector normal to the circle plane 'n'.  
 """
 function circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Real}, n::Vector{<:Real}, r::Real)
 
@@ -36,8 +40,10 @@ function circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Rea
 end
 
 """
-Retrieving inverse kinematics solution from point locations and returns the
-location of point k to avoid multiple evaluation
+    inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool)
+
+Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
+location of point k to avoid multiple evaluation. The solution is specified by 'specsol'. 
 """
 function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool)
 
@@ -68,13 +74,14 @@ function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
 end
 
 """
-Retrieving inverse kinematics solution from point locations and returns the
-location of point k to avoid multiple evaluation
+    forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
+
+Retrieving the spatial location of 'k' given the solution for the actuator lengths 'q'.
 """
 function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
 
     @unpack l, r, r_, h, b, c, e0, n = wg
-    x = Vector{Real}(undef, 2)
+    # x = Vector{Real}(undef, 2) not further used 
     k = Vector{Vector{Real}}(undef, 2)
 
     for i = 1:2
@@ -88,7 +95,9 @@ function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
 end
 
 """
-Constraint equation depending on x and q
+    constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{Int}, intrinsic::Bool)
+
+Constraint equation depending on the end-effector rotation 'x' and actuator lengths 'q'.
 """
 function constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{Int}, intrinsic::Bool)
     @unpack l, r, r_, h, b, c, e0, n = wg
@@ -118,7 +127,9 @@ function constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{In
 end
 
 """
-Differential kinematics of the constraints
+    Jacobian(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool, split::Bool = false)
+
+Differential kinematics of the constraints.
 """
 function Jacobian(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool, split::Bool = false)
 
@@ -136,8 +147,10 @@ function Jacobian(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, in
 end
 
 """
+    inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool)
+
 Inverse kinematics of the comparative 2UPS + 1U mechanism - simply computing
-Euclidean distance
+Euclidean distance given the end-effector orientation 'x'
 """
 function inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool)
 
@@ -162,7 +175,9 @@ function inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::B
 end
 
 """
-Comparative 2UPS + 1U mechanism constraint equation depending on x and q
+    constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool)
+
+Comparative 2UPS + 1U mechanism constraint equation depending on end-effector orientation 'x' and actuator lengths 'q'.
 """
 function constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool)
     @unpack b, e0 = wg
@@ -186,7 +201,9 @@ function constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool)
 end
 
 """
-Differential kinematics of the constraints of comparative 2UPS + 1U mechanism
+    Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool, split::Bool = false)
+
+Differential kinematics of the constraints of comparative 2UPS + 1U mechanism.
 """
 function Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool, split::Bool = false)
 
