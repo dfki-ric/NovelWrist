@@ -5,8 +5,7 @@ A julia package for the kinematic analysis of the 2SU\[RSPU\] + 1U mechanism tha
 ![test](./docs/2SPU+2RSU+1U_design_2.png?raw=true "CAD design of 2SU[RSPU] + 1U mechanism")
 
 The 2SU\[RSPU\] + 1U design and its kinematic analysis is presented in [link to paper](). This repository contains a more generalized version of the code that was used to perform the kinematic analysis. It offers the functionality to create designs of equal type by specifying geometric parameters and 
-then computing (and visualizing), the differential kinematics as well as the mechanisms conditioning in the work space (see documentation).     
-As additional feature these characteristics can be compared to the ones of a 2SPU + 1U mechanism, a conventional wrist design.      
+then computing (and visualizing), the differential kinematics as well as the mechanisms conditioning in the work space. As additional feature these characteristics can be compared to the ones of a 2SPU + 1U mechanism, a conventional wrist design.      
 
 ## Installation
 ```
