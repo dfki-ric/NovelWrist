@@ -250,17 +250,56 @@ function create_singularity_data(wg::WristGeometry; α::Tuple{Real, Real}, γ::T
                                                 "specsol", specsol,
                                                 "xrange",xrange,
                                                 "yrange",yrange,
+                                                "resol", resol, 
                                                 "wsx", wsx,
                                                 "wsy", wsy)
-end
+end 
 
 """
 Plots singularities for precomputed data
 """
-function plot_singularities_C()
+function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
 
-    wsdet, wsdet_C, α, γ, specsol, xrange, yrange, wsx, wsy = load(String(@__DIR__)*"/singularities.jld", "wsdet", "wsdet_C", "α", "γ", "specsol", "xrange", "yrange", "wsx", "wsy")
+    xrange = LinRange(α[1], α[2], resol)
+    yrange = LinRange(γ[1], γ[2], resol)
+    wsdet = fill(NaN, (resol, resol))
+    wsdet_C = fill(NaN, (resol, resol))
 
+    shadow = fill(NaN, (resol, resol))
+    wsareabounds = SVector.([2,1,-1,1,2], [0,-2,0,2,0])
+    wsx_left,wsy_left,wsx_right,wsy_right = [],[],[],[]
+
+    sprev = 0
+    for (i, x) in enumerate(xrange)
+        for (j, y) in enumerate(yrange)
+            Jx, Jq = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
+            Jx_C, Jq_C = Jacobian_C([x,y], wg, intrinsic = intrinsic, split = true)
+
+            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            
+            if any(isnan.(Jx))
+                wsdet[i,j] = NaN
+            else
+                wsdet[i,j] = log10(det(Matrix{Real}(Jx*Jx')))
+            end
+            wsdet_C[i,j] = log10(det(Matrix{Real}(Jx_C*Jx_C')))
+
+            if all(vcat(q .< wg.actuator_limits[1][2], q .> wg.actuator_limits[1][1], inpolygon([x,y], wsareabounds; in=true, on=true, out=false)))
+                shadow[i,j] = 1
+            end
+            if isone(shadow[i,j]) && any(isnan.(sprev))
+                append!(wsx_left, x)
+                append!(wsy_left, y)
+            elseif isnan(shadow[i,j]) && any(isone.(sprev))
+                append!(wsx_right, x)
+                append!(wsy_right, y)
+            end
+            sprev = shadow[i,j]
+        end
+    end
+
+    wsx = vcat(wsx_left, reverse!(wsx_right))
+    wsy = vcat(wsy_left, reverse!(wsy_right))
 
     shadow = deepcopy(wsdet)
     for i = 1:resol
@@ -296,7 +335,10 @@ function plot_singularities_C()
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
     return plt
-end
+end 
+
+
+
 
 """
 Comparative plot for delivered pure pitch torque
