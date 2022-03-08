@@ -36,7 +36,7 @@ The actuator limits denote the minimum and maximum values that can be reached by
 
 ### Kinematics
 #### Inverse and Forward Kinematics 
-Compute one of 4 possible inverse kinematics solutions (2 for each side) in zero position of the end-effector:
+Computes one of the 4 possible inverse kinematics solutions (2 for each side) in zero position of the end-effector:
 
 ```jl
 julia> x = [0, 0]; # angles in rad  
@@ -50,7 +50,7 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
 The obtained values for `q` correspont to the lower `actuator_limits`.  
 
 #### Constrained Jacobian
-To get the Jacobian **J** as product of the inverted work space Jacobian *J*x and the joint space Jacobian *J*q:
+To get the Jacobian **J** as product of the inverted work space Jacobian **J**x and the joint space Jacobian **J**q:
 
 ```jl
 julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)
@@ -61,10 +61,17 @@ julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = f
 When `split = true`, **J**x and **J**q are returned componentwise. 
 
 ### Performance Analysis
-The **condition index** of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively.
+The **condition index** of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively:
 
 ```jl
 julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol = 500) # increasing resol will give a higher resolution
 ```
 ![test](./docs/condition_index.png?raw=true "Conditioning")
 The dashed lines indicate the workspace limits imposed by `actuator_limits`.
+
+The **configuration space** plotted over the actuator lengths. Actuator lengths are computed for end-effector orientations between -π and π: 
+```jl
+julia> plot_configuration_space(build_wrist; specsol = [1,2], intrinsic = true, resol = 100)
+```
+![test](./docs/c_space.png?raw=true "Configuration space")
+
