@@ -6,7 +6,7 @@ Finds maximum element != NaN in array
 function nonNaNmax(A)
     Amax = maximum(x->isnan(x) ? -Inf : x,A)
     idxMax = findfirst(==(Amax), A)
-    return A[idxMax], idxMax # either change nonNaNmin to also return idx or only return index
+    return A[idxMax], idxMax
 end
 
 """
