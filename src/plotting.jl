@@ -472,7 +472,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
 
     ## velocity transmission
     # find axis limits for second y-axis 
-    ylimits = (minimum([nonNaNmin(s1),nonNaNmin(s2)])-8, maximum([nonNaNmax(s1)[1],nonNaNmax(s2)[1]]))
+    ylimits = (minimum([nonNaNmin(s1)[1],nonNaNmin(s2)[1]])-8, maximum([nonNaNmax(s1)[1],nonNaNmax(s2)[1]]))
     plot!(twinx(plt), xrange, s1,
         xlims = xlimits,
         ylims = ylimits,
