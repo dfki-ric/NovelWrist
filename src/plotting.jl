@@ -1,15 +1,16 @@
 """
+    plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
+
 Scatter plot of the admissible configurations
 """
-function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], 
-                                intrinsic::Bool = true, resol::Int = 100)
+function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
 
     act1 = fill(NaN, (resol^2, ))
     act2 = fill(NaN, (resol^2, ))
 
     c = 1
-    for (i, x) in enumerate(LinRange(-π, π, resol))
-        for (j, y) in enumerate(LinRange(-π, π, resol))
+    for (_, x) in enumerate(LinRange(-π, π, resol))
+        for (_, y) in enumerate(LinRange(-π, π, resol))
             q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
             act1[c] = q[1]
             act2[c] = q[2]
@@ -32,11 +33,11 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
 end
 
 """
-Plots the conditioning for a predefind workspace
+    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+
+Plots the conditioning for a predefined workspace
 """
-function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real},
-                           specsol::Vector{Int} = [1,2], intrinsic::Bool = true,
-                           resol::Int = 200)
+function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -87,11 +88,11 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
 end
 
 """
-Plots singulartities for a predefind workspace
+    plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+
+Plots singulartities for a predefined workspace
 """
-function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real},
-                           specsol::Vector{Int} = [1,2], intrinsic::Bool = true,
-                           resol::Int = 200)
+function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -142,11 +143,11 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
 end
 
 """
-Plots the conditioning for a predefind workspace
+    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+
+Plots the difference of the condition index (novel and conventional design) for a predefined workspace
 """
-function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real},
-                           specsol::Vector{Int} = [1,2], intrinsic::Bool = true,
-                           resol::Int = 200)
+function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -196,7 +197,9 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
 end
 
 """
-Plots singularities for precomputed data
+    plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
+
+Plots the singularity curves (novel and conventional design)
 """
 function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
 
@@ -277,15 +280,12 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
     return plt
 end 
 
-
-
-
 """
-Comparative plot for delivered pure pitch torque
+    plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
+
+Comparative plot for delivered pure inclination/ pitch torque and speed
 """
-function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real},
-                           specsol::Vector{Int} = [1,2], intrinsic::Bool = true,
-                           resol::Int = 300)
+function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -412,7 +412,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
     println("Pure inclination/tilt characteristics - new wrist:\n"*str1*"\n")
     println("Pure inclination/tilt characteristics - comparative design:\n"*str2)
 
-    # force transmission
+    ## force transmission
     # choose x-axis limits according to limits of the optimized workspace
     xlimits = (minimum([αlims[1],γlims[1]]), maximum([αlims[2],γlims[2]]))
     plt = plot(xrange, f1,
@@ -470,11 +470,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
         color = :red,
         label = "tilt speed - comp. design")
 
-
-
-    
-    # velocity transmission
-    
+    ## velocity transmission
     # find axis limits for second y-axis 
     ylimits = (minimum([nonNaNmin(s1),nonNaNmin(s2)])-8, maximum([nonNaNmax(s1)[1],nonNaNmax(s2)[1]]))
     plot!(twinx(plt), xrange, s1,
