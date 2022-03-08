@@ -2,7 +2,7 @@
 A julia package for the kinematic analysis of the 2SU\[RSPU\] + 1U mechanism that is used as wrist for the humaniod robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
 
 ## Introduction
-![test](./docs/2SPU+2RSU+1U_design_2.png?raw=true "CAD design of 2SU[RSPU] + 1U mechanism")
+![test](./assets/2SPU+2RSU+1U_design_2.png?raw=true "CAD design of 2SU[RSPU] + 1U mechanism")
 
 The 2SU\[RSPU\] + 1U design and its kinematic analysis is presented in [link to paper](). This repository contains a more generalized version of the code that was used to perform the kinematic analysis. It offers the functionality to create designs of equal type by specifying geometric parameters and 
 then computing (and visualizing), the differential kinematics as well as the mechanisms conditioning in the work space. As additional feature these characteristics can be compared to the ones of a 2SPU + 1U mechanism, a conventional wrist design.      
@@ -14,7 +14,7 @@ pkg> add NovelWrist
 
 ## Documentation
 ### Create a new design 
-![test](./docs/kinematic_model.png?raw=true "kinematic model")
+![test](./assets/kinematic_model.png?raw=true "kinematic model")
 
 The geometric parameters that can be altered by the user in order to create a new design are named in accordance to the kinematic model. The below values (in mm) are those used througout the documentation process and are from the actual build wrist. 
 
@@ -67,7 +67,7 @@ The condition index of the novel mechanism can be plotted over `α` and `γ` (de
 ```jl
 julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol = 500) # increasing resol will give a higher resolution
 ```
-![test](./docs/condition_index.png?raw=true "Conditioning")
+![test](./assets/condition_index.png?raw=true "Conditioning")
 The dashed lines indicate the workspace limits imposed by `actuator_limits`.
 
 ##### Configuration Space
@@ -85,7 +85,7 @@ Compute and plot the **difference of the condition index** between 2SU\[RSPU\] +
 ```jl
 julia> plot_conditioning_C(build_wrist, α = (-π, π), γ = (-π, π), resol = 400)
 ```
-![test](./docs/conditioning_comparison.png?raw=true "Comparison of conditioning")
+![test](./assets/conditioning_comparison.png?raw=true "Comparison of conditioning")
 
 
 The **singularity curves** of novel design and comparative design are obtained by sampling through the work space. Note, that in order to get closed contures, a high value for `resol` has to be set. This however increases the computing time considerably.        
@@ -93,7 +93,7 @@ The **singularity curves** of novel design and comparative design are obtained b
 ```jl
 julia> plot_singularities_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], intrinsic = true, resol = 5000)
 ```
-![test](./docs/singularities_C.png?raw=true "Comparison of singularity curves")
+![test](./assets/singularities_C.png?raw=true "Comparison of singularity curves")
 The theoretically feasible work space for the novel design is denoted by the blue coloured "shadow".
 
 Plots of **Torque** and **Speed** at pure inclination and pure tilt movements can be computed. Additionally caracteristic values are printed to the console:
@@ -112,6 +112,6 @@ julia> plot_torque_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2
     Tilt range: -0.97/0.98 rad, 
     Maximum tilt torque: 53.86 Nm, correspondent tilt velocity: 7.43 rad/s
 ```
-![test](./docs/torque_and_speed.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
+![test](./assets/torque_and_speed.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
 
 
