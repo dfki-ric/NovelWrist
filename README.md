@@ -50,7 +50,7 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
 The obtained values for `q` correspont to the lower `actuator_limits`.  
 
 #### Constrained Jacobian
-To get the Jacobian *J* as product of the inverted work space Jacobian *J*x and the joint space Jacobian *J*q:
+To get the Jacobian **J** as product of the inverted work space Jacobian *J*x and the joint space Jacobian *J*q:
 
 ```jl
 julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)
@@ -58,10 +58,10 @@ julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = f
  15.9633   15.9633
  17.737   -17.737
 ```
-When `split = true`, *J*x and *J*q are returned componentwise. 
+When `split = true`, **J**x and **J**q are returned componentwise. 
 
 ### Performance Analysis
-The *condition index* of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively.
+The **condition index** of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively.
 
 ```jl
 julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol = 500) # increasing resol will give a higher resolution
