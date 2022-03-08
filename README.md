@@ -8,7 +8,7 @@ The 2SU\[RSPU\] + 1U design and its kinematic analysis is presented in [link to 
 then computing (and visualizing), the differential kinematics as well as the mechanisms conditioning in the work space. As additional feature these characteristics can be compared to the ones of a 2SPU + 1U mechanism, a conventional wrist design.      
 
 ## Installation
-```
+```jl
 pkg> add NovelWrist
 ```
 
@@ -16,30 +16,38 @@ pkg> add NovelWrist
 ### Create a new design 
 ![test](./docs/kinematic_model.png?raw=true "kinematic model")
 
-The geometric parameters that can be altered by the user in order to create a new design are named in accordance to the kinematic model. 
-The below values are those from the build wrist and are used througout the documentation process. 
+The geometric parameters that can be altered by the user in order to create a new design are named in accordance to the kinematic model. The below values (in mm) are those used througout the documentation process and are from the actual build wrist. 
 
-```
-using NovelWrist
-build_wrist = WristGeometry(l = (0.045, 0.045), 
-                            r = (0.049, 0.049), 
-                            r_ = (0.049, 0.049),
-                            h = (0.012, 0.012),
-                            b = ([0.015, -0.178, -0.034], [-0.015, -0.178, -0.034]),
-                            c = ([0.015, -0.032, 0.011], [-0.015, -0.032, 0.011]),
-                            e0 = ([0.027, 0, -0.030], [-0.027, 0, -0.030]),
-                            n = ([1, 0, 0], [-1, 0, 0]),
-                            actuator_limits = ((0.113, 0.178), (0.113, 0.178)))
-```
-
-The actuator limits denote the minimum and maximum values that can be reached by the linear actuators, denoted as 'q'.
-
-### Inverse and Forward Kinematics  
-```
-q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
+```jl
+julia> using NovelWrist
+julia> build_wrist = WristGeometry(l = (0.045, 0.045), 
+                                r = (0.049, 0.049), 
+                                r_ = (0.049, 0.049),
+                                h = (0.012, 0.012),
+                                b = ([0.015, -0.178, -0.034], [-0.015, -0.178, -0.034]),
+                                c = ([0.015, -0.032, 0.011], [-0.015, -0.032, 0.011]),
+                                e0 = ([0.027, 0, -0.030], [-0.027, 0, -0.030]),
+                                n = ([1, 0, 0], [-1, 0, 0]),
+                                actuator_limits = ((0.113, 0.178), (0.113, 0.178))); 
 ```
 
-Computes the inverse kinematics solution for the end-effector orientation given by x, where x is a vector     
+The actuator limits denote the minimum and maximum values that can be reached by the linear actuators, denoted as 'q' in the kinematic model.
+
+### Inverse and Forward Kinematics
+Compute one of 4 possible inverse kinematics solutions (2 for each side) in zero position of the end-effector:
+
+```jl
+julia> x = [0, 0]; # angles in rad  
+
+julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true) # constellations of 1 and 2 in specsol lead to 2^2 solutions
+2-element Vector{Real}:
+ 0.13347357815533836
+ 0.13347357815533836
+```
+
+The obtained lengths correspont to the lower `actuator_limits`.  
+
+
 
 
 
