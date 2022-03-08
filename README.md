@@ -47,7 +47,7 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
  0.13347357815533836
 ```
 
-The obtained values for `q` correspont to the lower `actuator_limits`.  
+The obtained values for `q` correspond to the lower `actuator_limits`.  
 
 #### Constrained Jacobian
 To get the Jacobian **J** as product of the inverted work space Jacobian **J**x and the joint space Jacobian **J**q:
@@ -61,6 +61,7 @@ julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = f
 When `split = true`, **J**x and **J**q are returned componentwise. 
 
 ### Performance Analysis
+
 The **condition index** of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively:
 
 ```jl
@@ -69,9 +70,25 @@ julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = 
 ![test](./docs/condition_index.png?raw=true "Conditioning")
 The dashed lines indicate the workspace limits imposed by `actuator_limits`.
 
-The **configuration space** plotted over the actuator lengths. Actuator lengths are computed for end-effector orientations between -π and π: 
+The **configuration space** can be plotted over the actuator lengths. Actuator lengths are computed for end-effector orientations between -π and π: 
 ```jl
 julia> plot_configuration_space(build_wrist; specsol = [1,2], intrinsic = true, resol = 100)
 ```
 ![test](./docs/c_space.png?raw=true "Configuration space")
+
+Compute and plot the difference of the condition index between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superio dexterity of the novel design): 
+
+```jl
+julia> plot_conditioning_C(build_wrist, α = (-π, π), γ = (-π, π), resol = 400)
+```
+![test](./docs/conditioning_comparison.png?raw=true "Comparison of conditioning")
+
+The **singularity curves** of novel design and comparative design are obtained by sampling through the work space. Note, that in order to get closed contures, a high value for `resol` has to be set. This however increases the computing time considerably.        
+
+```jl
+julia> plot_singularities_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], intrinsic = true, resol = 5000)
+```
+![test](./docs/singularities_C.png?raw=true "Comparison of singularity curves")
+The theoretically feasible work space for the novel design is denoted by the blue coloured "shadow".
+
 
