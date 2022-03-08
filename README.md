@@ -20,6 +20,7 @@ The geometric parameters that can be altered by the user in order to create a ne
 
 ```jl
 julia> using NovelWrist
+
 julia> build_wrist = WristGeometry(l = (0.045, 0.045), 
                                 r = (0.049, 0.049), 
                                 r_ = (0.049, 0.049),
@@ -33,7 +34,8 @@ julia> build_wrist = WristGeometry(l = (0.045, 0.045),
 
 The actuator limits denote the minimum and maximum values that can be reached by the linear actuators, denoted as 'q' in the kinematic model.
 
-### Inverse and Forward Kinematics
+### Kinematics
+#### Inverse and Forward Kinematics 
 Compute one of 4 possible inverse kinematics solutions (2 for each side) in zero position of the end-effector:
 
 ```jl
@@ -45,16 +47,24 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
  0.13347357815533836
 ```
 
-The obtained lengths correspont to the lower `actuator_limits`.  
+The obtained values for `q` correspont to the lower `actuator_limits`.  
 
+#### Constrained Jacobian
+To get the Jacobian *J* as product of the inverted work space Jacobian *J*x and the joint space Jacobian *J*q:
 
+```jl
+julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)
+2×2 Matrix{Real}:
+ 15.9633   15.9633
+ 17.737   -17.737
+```
+When `split = true`, *J*x and *J*q are returned componentwise. 
 
+### Performance Analysis
+The *condition index* of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively.
 
-
-
-
-![test](./docs/kinematic_analyis.png?raw=true "kinematic characteristics")
-
-- the size of the feasible work space (a)
-- the conditioning of the mechanism (b),
-- and torque and speed values of the end-effector (c)
+```jl
+julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol = 500) # increasing resol will give a higher resolution
+```
+![test](./docs/condition_index.png?raw=true "Conditioning")
+The dashed lines indicate the workspace limits imposed by `actuator_limits`.
