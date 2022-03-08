@@ -45,7 +45,7 @@ end
 Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
 location of point k to avoid multiple evaluation. The solution is specified by 'specsol'. 
 """
-function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool)
+function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool) # eventually adapt it for plotting the forward solutions
 
     @unpack l, r, r_, h, b, c, e0, n = wg
     q = Vector{Real}(undef, 2)

@@ -25,4 +25,3 @@ savefig(String(@__DIR__)*"/singularities_C.png")
 
 plot_torque_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol=600)
 savefig(String(@__DIR__)*"/torque_C.png")
-                            
