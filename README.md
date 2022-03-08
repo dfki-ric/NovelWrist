@@ -112,6 +112,6 @@ julia> plot_torque_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2
     Tilt range: -0.97/0.98 rad, 
     Maximum tilt torque: 53.86 Nm, correspondant tilt velocity: 7.43 rad/s
 ```
-![test](./docs/torque_and_speed.png.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
+![test](./docs/torque_and_speed.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
 
 
