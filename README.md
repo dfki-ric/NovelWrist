@@ -35,7 +35,7 @@ julia> build_wrist = WristGeometry(l = (0.045, 0.045),
 The actuator limits denote the minimum and maximum values that can be reached by the linear actuators, denoted as 'q' in the kinematic model.
 
 ### Kinematics
-#### Inverse and Forward Kinematics 
+##### Inverse and Forward Kinematics 
 Computes one of the 4 possible inverse kinematics solutions (2 for each side) in zero position of the end-effector:
 
 ```jl
@@ -49,7 +49,7 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
 
 The obtained values for `q` correspond to the lower `actuator_limits`.  
 
-#### Constrained Jacobian
+##### Constrained Jacobian
 To get the Jacobian **J** as product of the inverted work space Jacobian **J**x and the joint space Jacobian **J**q:
 
 ```jl
@@ -61,8 +61,8 @@ julia> J = Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = f
 When `split = true`, **J**x and **J**q are returned componentwise. 
 
 ### Performance Analysis
-
-The **condition index** of the mechanism plotted over `α` and `γ`, denoted as inclination and tilt angle in the paper, respectively:
+##### Conditioning
+The condition index of the novel mechanism can be plotted over `α` and `γ` (denoted as inclination and tilt angle in the paper, respectively):
 
 ```jl
 julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol = 500) # increasing resol will give a higher resolution
@@ -70,18 +70,23 @@ julia> plot_conditioning(build_wrist, α = (-π, π), γ = (-π, π), specsol = 
 ![test](./docs/condition_index.png?raw=true "Conditioning")
 The dashed lines indicate the workspace limits imposed by `actuator_limits`.
 
-The **configuration space** can be plotted over the actuator lengths. Actuator lengths are computed for end-effector orientations between -π and π: 
+##### Configuration Space
+The actuator lengths for plotting the the configuration space are computed for end-effector orientations between -π and π: 
 ```jl
 julia> plot_configuration_space(build_wrist; specsol = [1,2], intrinsic = true, resol = 100)
 ```
 ![test](./docs/c_space.png?raw=true "Configuration space")
+Here, for better visibility, the `actuator_limits` are visualized using a red rectangle. 
 
-Compute and plot the difference of the condition index between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superio dexterity of the novel design): 
+##### Comparison to conventional wrist design
+
+Compute and plot the **difference of the condition index** between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superio dexterity of the novel design): 
 
 ```jl
 julia> plot_conditioning_C(build_wrist, α = (-π, π), γ = (-π, π), resol = 400)
 ```
 ![test](./docs/conditioning_comparison.png?raw=true "Comparison of conditioning")
+
 
 The **singularity curves** of novel design and comparative design are obtained by sampling through the work space. Note, that in order to get closed contures, a high value for `resol` has to be set. This however increases the computing time considerably.        
 
