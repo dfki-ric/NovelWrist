@@ -196,66 +196,6 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
 end
 
 """
-Creates data for plots
-"""
-function create_singularity_data(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real},
-                           specsol::Vector{Int} = [1,2], intrinsic::Bool = true,
-                           resol::Int = 5000)
-
-    xrange = LinRange(α[1], α[2], resol)
-    yrange = LinRange(γ[1], γ[2], resol)
-    wsdet = fill(NaN, (resol, resol))
-    wsdet_C = fill(NaN, (resol, resol))
-
-    shadow = fill(NaN, (resol, resol))
-    wsareabounds = SVector.([2,1,-1,1,2], [0,-2,0,2,0])
-    wsx_left,wsy_left,wsx_right,wsy_right = [],[],[],[]
-
-    sprev = 0
-    for (i, x) in enumerate(xrange)
-        for (j, y) in enumerate(yrange)
-            Jx, Jq = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
-            Jx_C, Jq_C = Jacobian_C([x,y], wg, intrinsic = intrinsic, split = true)
-
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
-            
-            if any(isnan.(Jx))
-                wsdet[i,j] = NaN
-            else
-                wsdet[i,j] = log10(det(Matrix{Real}(Jx*Jx')))
-            end
-            wsdet_C[i,j] = log10(det(Matrix{Real}(Jx_C*Jx_C')))
-
-            if all(vcat(q .< wg.actuator_limits[1][2], q .> wg.actuator_limits[1][1], inpolygon([x,y], wsareabounds; in=true, on=true, out=false)))
-                shadow[i,j] = 1
-            end
-            if isone(shadow[i,j]) && any(isnan.(sprev))
-                append!(wsx_left, x)
-                append!(wsy_left, y)
-            elseif isnan(shadow[i,j]) && any(isone.(sprev))
-                append!(wsx_right, x)
-                append!(wsy_right, y)
-            end
-            sprev = shadow[i,j]
-        end
-    end
-
-    wsx = vcat(wsx_left, reverse!(wsx_right))
-    wsy = vcat(wsy_left, reverse!(wsy_right))
-
-    save(String(@__DIR__)*"/singularities.jld", "wsdet", wsdet,
-                                                "wsdet_C", wsdet_C,
-                                                "α", α,
-                                                "γ", γ,
-                                                "specsol", specsol,
-                                                "xrange",xrange,
-                                                "yrange",yrange,
-                                                "resol", resol, 
-                                                "wsx", wsx,
-                                                "wsy", wsy)
-end 
-
-"""
 Plots singularities for precomputed data
 """
 function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
@@ -466,8 +406,8 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
     tiltvelocity_cd = s2_C[maxtiltidx_cd] # tilt velocity at maximum tilt torque - comp design
 
     # print characteristics to console
-    str1 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlims[2], digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_nw, digits = 2)) Nm, correspondant inclination velocity: $(round(inclvelocity_nw, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_nw, digits = 2)) Nm, correspondant tilt velocity: $(round(tiltvelocity_nw, digits = 2)) rad/s"
-    str2 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlim_comp, digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_cd, digits = 2)) Nm, correspondant inclination velocity: $(round(inclvelocity_cd, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_cd, digits = 2)) Nm, correspondant tilt velocity: $(round(tiltvelocity_cd, digits = 2)) rad/s"
+    str1 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlims[2], digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_nw, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_nw, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_nw, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_nw, digits = 2)) rad/s"
+    str2 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlim_comp, digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_cd, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_cd, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_cd, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_cd, digits = 2)) rad/s"
 
     println("Pure inclination/tilt characteristics - new wrist:\n"*str1*"\n")
     println("Pure inclination/tilt characteristics - comparative design:\n"*str2)
