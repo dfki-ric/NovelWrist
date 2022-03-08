@@ -96,4 +96,22 @@ julia> plot_singularities_C(build_wrist, α = (-π, π), γ = (-π, π), specsol
 ![test](./docs/singularities_C.png?raw=true "Comparison of singularity curves")
 The theoretically feasible work space for the novel design is denoted by the blue coloured "shadow".
 
+Plots of **Torque** and **Speed** at pure inclination and pure tilt movements can be computed. Additionally caracteristic values are printed to the console:
+
+```jl
+julia> plot_torque_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol=600)
+    Pure inclination/tilt characteristics - new wrist:
+    Inclination range: -0.74/1.83 rad, 
+    Maximum inclination torque: 62.94 Nm, correspondant inclination velocity: 6.36 rad/s, 
+    Tilt range: -0.97/0.98 rad, 
+    Maximum tilt torque: 56.38 Nm, correspondant tilt velocity: 7.09 rad/s
+
+    Pure inclination/tilt characteristics - comparative design:
+    Inclination range: -0.74/1.76 rad, 
+    Maximum inclination torque: 59.86 Nm, correspondant inclination velocity: 6.68 rad/s, 
+    Tilt range: -0.97/0.98 rad, 
+    Maximum tilt torque: 53.86 Nm, correspondant tilt velocity: 7.43 rad/s
+```
+![test](./docs/torque_and_speed.png.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
+
 
