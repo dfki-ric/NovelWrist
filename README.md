@@ -75,7 +75,7 @@ The actuator lengths for plotting the the configuration space are computed for e
 ```jl
 julia> plot_configuration_space(build_wrist; specsol = [1,2], intrinsic = true, resol = 100)
 ```
-![test](./docs/c_space.png?raw=true "Configuration space")
+![test](./assets/c_space.png?raw=true "Configuration space")
 Here, for better visibility, the `actuator_limits` are visualized using a red rectangle. 
 
 ##### Comparison to conventional wrist design
