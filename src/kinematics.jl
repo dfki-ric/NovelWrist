@@ -33,7 +33,7 @@ function circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Rea
     if dot(δp, δp) > r^2
         p = [NaN, NaN, NaN]
     else
-        p = cross(δp/norm(δp), n*√(r^2 - dot(δp, δp)))
+        p = LinearAlgebra.cross(δp/norm(δp), n*√(r^2 - dot(δp, δp)))
     end
 
     return (cp + δp + p, cp + δp - p)

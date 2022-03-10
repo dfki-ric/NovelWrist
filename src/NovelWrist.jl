@@ -5,9 +5,9 @@ using LinearAlgebra
 using Plots
 using ForwardDiff
 using UnPack
-using JLD2
 using StaticArrays
 using PolygonOps
+using Oscar  
 
 # Includes 
 include("geometrictypes.jl")

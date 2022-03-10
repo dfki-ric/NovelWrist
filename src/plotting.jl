@@ -3,7 +3,7 @@
 
 Scatter plot of the admissible configurations
 """
-function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
+function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
 
     act1 = fill(NaN, (resol^2, ))
     act2 = fill(NaN, (resol^2, ))
@@ -18,7 +18,7 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
         end
     end
 
-    scatter(act1, act2, aspect_ratio = :equal, size = (600,600), dpi = 300,
+    plt = scatter(act1, act2, aspect_ratio = :equal, size = (600,600), dpi = 300,
             xlabel = "actuator 1 [m]", ylabel = "actuator 2 [m]", label = false)
     
     # plotting actuator actuator limits
@@ -30,6 +30,12 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
           [wg.actuator_limits[2][1], wg.actuator_limits[2][1]], color = :red, lw = 2, label = false)
     plot!([wg.actuator_limits[1][1], wg.actuator_limits[1][2]], 
           [wg.actuator_limits[2][2], wg.actuator_limits[2][2]], color = :red, lw = 2, label = false)
+
+    if testing
+        return act1, act2 
+    else 
+        return plt
+    end 
 end
 
 """
@@ -37,7 +43,7 @@ end
 
 Plots the conditioning for a predefined workspace
 """
-function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -84,7 +90,11 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
 
         plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
-    return plt
+    if testing
+        return wscond 
+    else 
+        return plt
+    end
 end
 
 """
@@ -92,7 +102,7 @@ end
 
 Plots singulartities for a predefined workspace
 """
-function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -139,7 +149,11 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
 
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
-    return plt
+    if testing
+        return wsdet 
+    else 
+        return plt
+    end
 end
 
 """
@@ -147,7 +161,7 @@ end
 
 Plots the difference of the condition index (novel and conventional design) for a predefined workspace
 """
-function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -193,7 +207,11 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
                  xlabel = "α [rad]", ylabel = "γ [rad]")
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
-    return plt
+    if testing
+        return wscond 
+    else 
+        return plt
+    end
 end
 
 """
@@ -201,7 +219,7 @@ end
 
 Plots the singularity curves (novel and conventional design)
 """
-function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
+function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -215,8 +233,8 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
     sprev = 0
     for (i, x) in enumerate(xrange)
         for (j, y) in enumerate(yrange)
-            Jx, Jq = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
-            Jx_C, Jq_C = Jacobian_C([x,y], wg, intrinsic = intrinsic, split = true)
+            Jx, _ = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
+            Jx_C, _ = Jacobian_C([x,y], wg, intrinsic = intrinsic, split = true)
 
             q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
             
@@ -277,7 +295,11 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
     # plotting shape of feasible work space
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
-    return plt
+    if testing
+        return wsdet, wsdet_C 
+    else 
+        return plt
+    end
 end 
 
 """
@@ -285,7 +307,7 @@ end
 
 Comparative plot for delivered pure inclination/ pitch torque and speed
 """
-function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
+function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -506,6 +528,10 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
         ls = :dashdot,
         color = :red,
         label = "")
-
-    return plt
+        
+    if testing
+        return maxincltorque_nw, maxtilttorque_nw, maxincltorque_cd, maxtilttorque_cd 
+    else 
+        return plt
+    end    
 end
