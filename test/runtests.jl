@@ -1,7 +1,11 @@
 using NovelWrist 
 using Base.Test
 
-println("testing kinematic function...")
+println("testing kinematic functions...")
 t = @elapsed include("kinematic_test.jl")
 println("done (took $t seconds).")
- 
+
+println("testing plotting functions...")
+t = @elapsed include("plotting_test.jl")
+println("done (took $t seconds).")
+

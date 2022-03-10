@@ -2,6 +2,10 @@ module kinematic_test
     using Test 
     using NovelWrist
 
+    ###################
+    # hardcoded tests #
+    ###################
+
     build_wrist = WristGeometry(l = (0.045, 0.045), 
                                 r = (0.049, 0.049), 
                                 r_ = (0.049, 0.049),
@@ -17,7 +21,6 @@ module kinematic_test
     @test Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)[1,2] ≈ 15.963257027677201
     @test Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)[2,1] ≈ 17.736952252974675
     @test Jacobian(x, build_wrist; specsol = [1,2], intrinsic = true, split = false)[2,2] ≈ -17.736952252974675
-
+    
 end 
 
- 
