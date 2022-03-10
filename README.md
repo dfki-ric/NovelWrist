@@ -49,6 +49,17 @@ julia> q = inverse_kinematics(x, build_wrist; specsol = [1,2], intrinsic = true)
 
 The obtained values for `q` correspond to the lower `actuator_limits`.  
 
+Computes the end-effector orientation `α` and `γ`, given the solution for the actuator lengths 'q':
+
+```jl
+julia> α, γ = forward_kinematics(q, build_wrist, specsol = [1,2]) 
+2-element Vector{Real}:
+ 0.00 # TO BE TESTED... 
+ 0.00
+```
+
+
+
 ##### Constrained Jacobian
 To get the Jacobian **J** as product of the inverted work space Jacobian **J**x and the joint space Jacobian **J**q:
 
@@ -80,7 +91,7 @@ Here, for better visibility, the `actuator_limits` are visualized using a red re
 
 ##### Comparison to conventional wrist design
 
-Compute and plot the **difference of the condition index** between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superio dexterity of the novel design): 
+Compute and plot the **difference of the condition index** between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superior dexterity of the novel design): 
 
 ```jl
 julia> plot_conditioning_C(build_wrist, α = (-π, π), γ = (-π, π), resol = 400)
@@ -96,7 +107,7 @@ julia> plot_singularities_C(build_wrist, α = (-π, π), γ = (-π, π), specsol
 ![test](./assets/singularities_C.png?raw=true "Comparison of singularity curves")
 The theoretically feasible work space for the novel design is denoted by the blue coloured "shadow".
 
-Plots of **Torque** and **Speed** at pure inclination and pure tilt movements can be computed. Additionally caracteristic values are printed to the console:
+Plots of **Torque** and **Speed** at pure inclination and pure tilt movements can be computed. Additionally, characteristic values are printed to the console:
 
 ```jl
 julia> plot_torque_C(build_wrist, α = (-π, π), γ = (-π, π), specsol = [1,2], resol=600)
