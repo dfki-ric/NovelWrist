@@ -14,7 +14,7 @@ include("geometrictypes.jl")
 include("helperfunctions.jl")
 include("kinematics.jl")
 include("plotting.jl")
-
+ 
 # kinematics
 export inverse_kinematics, Jacobian
 

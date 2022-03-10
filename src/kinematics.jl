@@ -45,7 +45,7 @@ end
 Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
 location of point k to avoid multiple evaluation. The solution is specified by 'specsol'. 
 """
-function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool) # eventually adapt it for plotting the forward solutions
+function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool) 
 
     @unpack l, r, r_, h, b, c, e0, n = wg
     q = Vector{Real}(undef, 2)
@@ -76,23 +76,42 @@ end
 """
     forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
 
-Retrieving the spatial location of 'k' given the solution for the actuator lengths 'q'.
+Retrieving the end-effector orientation, given the solution for the actuator lengths 'q'.
 """
 function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
 
     @unpack l, r, r_, h, b, c, e0, n = wg
-    # x = Vector{Real}(undef, 2) not further used 
     k = Vector{Vector{Real}}(undef, 2)
+    m = Vector{Vector{Real}}(undef, 2)
 
     for i = 1:2
         # computing intersection point
-        m = circle_sphere_intersection(b[i], q[i], c[i], n[i], r_[i])
+        m[i] = circle_sphere_intersection(b[i], q[i], c[i], n[i], r_[i])[specsol[i]]
         # location of crank points
-        k[i] = c[i] + r[i]/r_[i]*(m[specsol[i]] - c[i]) + h[i]*n[i]
+        k[i] = c[i] + r[i]/r_[i]*(m[i] - c[i]) + h[i]*n[i]
     end
 
-    return k
+    Ring, (t, u, v, w) = PolynomialRing(QQ, ["t", "u", "v", "w"], ordering = :degrevlex)
+
+    R = [v -w 0; w v 0; 0 0 1]*[1 0 0; 0 t -u; 0 u t]
+
+    eq1 = dot(R*Rational.(e0[1]) - Rational.(k[1]), R*Rational.(e0[1]) - Rational.(k[1])) - Rational(l[1]^2)
+    eq2 = dot(R*Rational.(e0[2]) - Rational.(k[2]), R*Rational.(e0[2]) - Rational.(k[2])) - Rational(l[2]^2)
+
+    eq3 = t^2 + u^2 - 1
+    eq4 = v^2 + w^2 - 1
+
+    II = ideal([eq1, eq2, eq3, eq4])
+
+    _,sol  = msolve(II, info_level=2)
+    t, u, v, w = sol 
+
+    α = atan(u,t)
+    γ = atan(w,v)
+
+    return α, γ
 end
+
 
 """
     constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{Int}, intrinsic::Bool)
