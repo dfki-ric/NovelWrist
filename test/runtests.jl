@@ -1,5 +1,5 @@
 using NovelWrist 
-using Base.Test
+using Test
 
 println("testing kinematic functions...")
 t = @elapsed include("kinematic_test.jl")
