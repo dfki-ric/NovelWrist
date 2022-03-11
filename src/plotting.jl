@@ -18,8 +18,7 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
         end
     end
 
-    plt = scatter(act1, act2, aspect_ratio = :equal, size = (600,600), dpi = 300,
-            xlabel = "actuator 1 [m]", ylabel = "actuator 2 [m]", label = false)
+    plt = scatter(act1, act2, aspect_ratio = :equal, size = (600,600), dpi = 300, xlabel = "actuator 1 [m]", ylabel = "actuator 2 [m]", label = false)
     
     # plotting actuator actuator limits
     plot!([wg.actuator_limits[1][1], wg.actuator_limits[1][1]], 
@@ -83,10 +82,7 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
     wsx = vcat(wsx_left, reverse!(wsx_right))
     wsy = vcat(wsy_left, reverse!(wsy_right))
 
-    plt = heatmap(xrange, yrange, wscond',
-                  xlims = α, ylims = γ,
-                  aspect_ratio = :equal, size = (600,600), dpi = 300,
-                  xlabel = "α [rad]", ylabel = "γ [rad]")
+    plt = heatmap(xrange, yrange, wscond', xlims = α, ylims = γ, aspect_ratio = :equal, size = (600,600), dpi = 300, xlabel = "α [rad]", ylabel = "γ [rad]")
 
         plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
@@ -141,11 +137,7 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
     wsx = vcat(wsx_left, reverse!(wsx_right))
     wsy = vcat(wsy_left, reverse!(wsy_right))
 
-    plt = heatmap(xrange, yrange, wsdet',
-                  xlims = α, ylims = γ,
-                  size = (600,600),
-                  aspect_ratio = :equal, dpi = 300,
-                  xlabel = "α [rad]", ylabel = "γ [rad]")
+    plt = heatmap(xrange, yrange, wsdet', xlims = α, ylims = γ, size = (600,600), aspect_ratio = :equal, dpi = 300, xlabel = "α [rad]", ylabel = "γ [rad]")
 
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
@@ -199,12 +191,7 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
 
     my_pal = palette([:red, :white, :green], 90)
 
-    plt = heatmap(xrange, yrange, wscond',
-                 xlims = α, ylims = γ,
-                 c = my_pal,
-                 aspect_ratio = :equal,
-                 size = (620,600), dpi = 300,
-                 xlabel = "α [rad]", ylabel = "γ [rad]")
+    plt = heatmap(xrange, yrange, wscond', xlims = α, ylims = γ, c = my_pal, aspect_ratio = :equal, size = (620,600), dpi = 300, xlabel = "α [rad]", ylabel = "γ [rad]")
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
     if testing
@@ -271,22 +258,10 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
         end
     end
 
-    plt= heatmap(xrange, yrange, shadow',
-                 xlims = α, ylims = γ,
-                 size = (600,600),
-                 dpi = 500,
-                 xlabel = "α [rad]", ylabel = "γ [rad]",
-                 colorbar = :false,
-                 aspect_ratio = :equal,
-                 color = RGBA(111/256, 166/256, 230/256, 64/256))
+    plt= heatmap(xrange, yrange, shadow', xlims = α, ylims = γ, size = (600,600), dpi = 500, xlabel = "α [rad]", ylabel = "γ [rad]", colorbar = :false, aspect_ratio = :equal, color = RGBA(111/256, 166/256, 230/256, 64/256))
 
-    contour!(xrange, yrange, wsdet',
-                  levels = [-13.5],
-                  color = :green)
-
-    contour!(xrange, yrange, wsdet_C',
-             levels = [-13.5],
-             color = :red)
+    contour!(xrange, yrange, wsdet', levels = [-13.5], color = :green)
+    contour!(xrange, yrange, wsdet_C', levels = [-13.5], color = :red)
 
     plot!([0, 0], [0, 0], color = :green, label = "new wrist", legend = :bottom)
 
@@ -426,14 +401,15 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
     tiltvelocity_nw = s2[maxtiltidx_nw] # tilt velocity at maximum tilt torque - new wrist
     inclvelocity_cd = s1_C[maxinlcidx_cd] # inclination velocity at maximum inclination torque - comp design
     tiltvelocity_cd = s2_C[maxtiltidx_cd] # tilt velocity at maximum tilt torque - comp design
+    
+    if !testing
+        # print characteristics to console
+        str1 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlims[2], digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_nw, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_nw, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_nw, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_nw, digits = 2)) rad/s"
+        str2 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlim_comp, digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_cd, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_cd, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_cd, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_cd, digits = 2)) rad/s"
 
-    # print characteristics to console
-    str1 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlims[2], digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_nw, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_nw, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_nw, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_nw, digits = 2)) rad/s"
-    str2 = "Inclination range: $(round(αlims[1], digits = 2))/$(round(αlim_comp, digits = 2)) rad, \nMaximum inclination torque: $(round(maxincltorque_cd, digits = 2)) Nm, correspondent inclination velocity: $(round(inclvelocity_cd, digits = 2)) rad/s, \nTilt range: $(round(γlims[1], digits = 2))/$(round(γlims[2], digits = 2)) rad, \nMaximum tilt torque: $(round(maxtilttorque_cd, digits = 2)) Nm, correspondent tilt velocity: $(round(tiltvelocity_cd, digits = 2)) rad/s"
-
-    println("Pure inclination/tilt characteristics - new wrist:\n"*str1*"\n")
-    println("Pure inclination/tilt characteristics - comparative design:\n"*str2)
-
+        println("Pure inclination/tilt characteristics - new wrist:\n"*str1*"\n")
+        println("Pure inclination/tilt characteristics - comparative design:\n"*str2)
+    end 
     ## force transmission
     # choose x-axis limits according to limits of the optimized workspace
     xlimits = (minimum([αlims[1],γlims[1]]), maximum([αlims[2],γlims[2]]))
