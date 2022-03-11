@@ -14,7 +14,10 @@ include("geometrictypes.jl")
 include("helperfunctions.jl")
 include("kinematics.jl")
 include("plotting.jl")
- 
+
+# types 
+export WristGeometry
+
 # kinematics
 export inverse_kinematics, Jacobian
 
