@@ -22,6 +22,6 @@ export WristGeometry
 export inverse_kinematics, Jacobian
 
 # performance analysis
-export plot_configuration_space, plot_conditioning, plot_conditioning_C, plot_singularities_C, plot_torque_C
+export plot_configuration_space, plot_conditioning, plot_conditioning_C,plot_singularities, plot_singularities_C, plot_torque_C
 
 end 
