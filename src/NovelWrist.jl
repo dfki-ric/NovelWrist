@@ -7,7 +7,7 @@ using ForwardDiff
 using UnPack
 using StaticArrays
 using PolygonOps
-using Oscar  
+using Oscar;   
 
 # Includes 
 include("geometrictypes.jl")
