@@ -17,6 +17,7 @@ include("plotting.jl")
 
 # types 
 export WristGeometry
+export RH5_wrist
 
 # kinematics
 export inverse_kinematics, Jacobian

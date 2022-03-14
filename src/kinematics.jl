@@ -40,12 +40,12 @@ function circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Rea
 end
 
 """
-    inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool)
+    inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool)
 
 Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
-location of point k to avoid multiple evaluation. The solution is specified by 'specsol'. 
+location of point k to avoid multiple evaluation. The solution is specified by 'solution'. 
 """
-function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool) 
+function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool) 
 
     @unpack l, r, r_, h, b, c, e0, n = wg
     q = Vector{Real}(undef, 2)
@@ -65,7 +65,7 @@ function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
         # computing intersection point
         k = circle_sphere_intersection(e, l[i], cp, n[i], r[i])
         # expressing vector difference
-        vt = c[i] + r_[i]/r[i]*(k[specsol[i]] - c[i] - h[i]*n[i]) - b[i]
+        vt = c[i] + r_[i]/r[i]*(k[solution[i]] - c[i] - h[i]*n[i]) - b[i]
         # distance of actuator
         q[i] = √dot(vt, vt)
     end
@@ -74,11 +74,11 @@ function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
 end
 
 """
-    forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
+    forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int})
 
 Retrieving the end-effector orientation, given the solution for the actuator lengths 'q'.
 """
-function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int})
+function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int})
 
     @unpack l, r, r_, h, b, c, e0, n = wg
     k = Vector{Vector{Real}}(undef, 2)
@@ -86,7 +86,7 @@ function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
 
     for i = 1:2
         # computing intersection point
-        m[i] = circle_sphere_intersection(b[i], q[i], c[i], n[i], r_[i])[specsol[i]]
+        m[i] = circle_sphere_intersection(b[i], q[i], c[i], n[i], r_[i])[solution[i]]
         # location of crank points
         k[i] = c[i] + r[i]/r_[i]*(m[i] - c[i]) + h[i]*n[i]
     end
@@ -103,22 +103,19 @@ function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; specsol::Vecto
 
     II = ideal([eq1, eq2, eq3, eq4])
 
-    _,sol  = msolve(II, info_level=2)
-    t, u, v, w = sol 
+    _, sol  = msolve(II, info_level = 0);
 
-    α = atan(u,t)
-    γ = atan(w,v)
+    return atan(Float64(sol[solution[3]][2]), Float64(sol[solution[3]][1])), atan(Float64(sol[solution[3]][4]), Float64(sol[solution[3]][3]))
 
-    return α, γ
 end
 
 
 """
-    constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{Int}, intrinsic::Bool)
+    constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool)
 
 Constraint equation depending on the end-effector rotation 'x' and actuator lengths 'q'.
 """
-function constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{Int}, intrinsic::Bool)
+function constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool)
     @unpack l, r, r_, h, b, c, e0, n = wg
     con = Vector{Real}(undef, 2)
 
@@ -137,7 +134,7 @@ function constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{In
         # computing intersection point
         k = circle_sphere_intersection(e, l[i], cp, n[i], r[i])
         # expressing vector difference
-        vt = c[i] + r_[i]/r[i]*(k[specsol[i]] - c[i] - h[i]*n[i]) - b[i]
+        vt = c[i] + r_[i]/r[i]*(k[solution[i]] - c[i] - h[i]*n[i]) - b[i]
         # constraint
         con[i] = q[i]^2 - dot(vt, vt)
     end
@@ -146,17 +143,17 @@ function constraints(x::Vector, q::Vector, wg::WristGeometry, specsol::Vector{In
 end
 
 """
-    Jacobian(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool, split::Bool = false)
+    Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool, split::Bool = false)
 
 Differential kinematics of the constraints.
 """
-function Jacobian(x::Vector{<:Real}, wg::WristGeometry; specsol::Vector{Int}, intrinsic::Bool, split::Bool = false)
+function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool, split::Bool = false)
 
-    q = inverse_kinematics(x, wg, specsol = specsol, intrinsic = intrinsic)
+    q = inverse_kinematics(x, wg, solution = solution, intrinsic = intrinsic)
 
     # differentiation by autodiff
-    Jx = ForwardDiff.jacobian(x_ -> constraints(x_, q, wg, specsol, intrinsic), x)
-    Jq = ForwardDiff.jacobian(q_ -> constraints(x, q_, wg, specsol, intrinsic), q)
+    Jx = ForwardDiff.jacobian(x_ -> constraints(x_, q, wg, solution, intrinsic), x)
+    Jq = ForwardDiff.jacobian(q_ -> constraints(x, q_, wg, solution, intrinsic), q)
 
     if split
         return Jx, Jq

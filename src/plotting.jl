@@ -1,9 +1,9 @@
 """
-    plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
+    plot_configuration_space(wg::WristGeometry; solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
 
 Scatter plot of the admissible configurations
 """
-function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
+function plot_configuration_space(wg::WristGeometry; solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
 
     act1 = fill(NaN, (resol^2, ))
     act2 = fill(NaN, (resol^2, ))
@@ -11,7 +11,7 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
     c = 1
     for (_, x) in enumerate(LinRange(-π, π, resol))
         for (_, y) in enumerate(LinRange(-π, π, resol))
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
             act1[c] = q[1]
             act2[c] = q[2]
             c += 1
@@ -38,11 +38,11 @@ function plot_configuration_space(wg::WristGeometry; specsol::Vector{Int} = [1,2
 end
 
 """
-    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
 Plots the conditioning for a predefined workspace
 """
-function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -55,8 +55,8 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
     sprev = 0
     for (i, x) in enumerate(xrange)
         for (j, y) in enumerate(yrange)
-            J = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic)
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            J = Jacobian([x,y], wg, solution = solution, intrinsic = intrinsic)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
 
             if any(isnan.(J))
                 wscond[i,j] = NaN
@@ -94,11 +94,11 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
 end
 
 """
-    plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
 Plots singulartities for a predefined workspace
 """
-function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -111,8 +111,8 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
     sprev = 0
     for (i, x) in enumerate(xrange)
         for (j, y) in enumerate(yrange)
-            Jx, Jq = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            Jx, Jq = Jacobian([x,y], wg, solution = solution, intrinsic = intrinsic, split = true)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
 
             if any(isnan.(Jx))
                 wsdet[i,j] = NaN
@@ -149,11 +149,11 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
 end
 
 """
-    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
 
 Plots the difference of the condition index (novel and conventional design) for a predefined workspace
 """
-function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -166,9 +166,9 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
     sprev = 0
     for (i, x) in enumerate(xrange)
         for (j, y) in enumerate(yrange)
-            J = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            J = Jacobian([x,y], wg, solution = solution, intrinsic = intrinsic)
             J_C = Jacobian_C([x,y], wg, intrinsic = intrinsic)
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
 
             if !any(isnan.(J))
                wscond[i,j] = 1/cond(Matrix{Real}(J*J')) - 1/cond(Matrix{Real}(J_C*J_C'))
@@ -202,11 +202,11 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
 end
 
 """
-    plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
+    plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
 
 Plots the singularity curves (novel and conventional design)
 """
-function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
+function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -220,10 +220,10 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
     sprev = 0
     for (i, x) in enumerate(xrange)
         for (j, y) in enumerate(yrange)
-            Jx, _ = Jacobian([x,y], wg, specsol = specsol, intrinsic = intrinsic, split = true)
+            Jx, _ = Jacobian([x,y], wg, solution = solution, intrinsic = intrinsic, split = true)
             Jx_C, _ = Jacobian_C([x,y], wg, intrinsic = intrinsic, split = true)
 
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
             
             if any(isnan.(Jx))
                 wsdet[i,j] = NaN
@@ -278,11 +278,11 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
 end 
 
 """
-    plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
+    plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
 
 Comparative plot for delivered pure inclination/ pitch torque and speed
 """
-function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, specsol::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
+function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -303,7 +303,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
 
     for (i, x) in enumerate(xrange)
        for (j, y) in enumerate(yrange)
-            q = inverse_kinematics([x,y], wg, specsol = specsol, intrinsic = intrinsic)
+            q = inverse_kinematics([x,y], wg, solution = solution, intrinsic = intrinsic)
             if all(vcat(q .< wg.actuator_limits[1][2], q .> wg.actuator_limits[1][1], inpolygon([x,y], wsareabounds; in=true, on=true, out=false)))
                 shadow[i,j] = 1
             end
@@ -333,7 +333,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
     for (i, x) in enumerate(xrange)
         if x > αlims[1] && x < αlims[2]
             J_C = Jacobian_C([x,0], wg, intrinsic = intrinsic)
-            J = Jacobian([x,0], wg, specsol = specsol, intrinsic = intrinsic)
+            J = Jacobian([x,0], wg, solution = solution, intrinsic = intrinsic)
             if any(isnan.(J))
                 f1[i] = NaN
                 s1[i] = NaN
@@ -364,7 +364,7 @@ function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real,
     for (j, y) in enumerate(yrange)
         if y > γlims[1] && y < γlims[2]
             J_C = Jacobian_C([0,y], wg, intrinsic = intrinsic)
-            J = Jacobian([0,y], wg, specsol = specsol, intrinsic = intrinsic)
+            J = Jacobian([0,y], wg, solution = solution, intrinsic = intrinsic)
             if any(isnan.(J))
                 f2[j] = NaN
                 s2[j] = NaN
