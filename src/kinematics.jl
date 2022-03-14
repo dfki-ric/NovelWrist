@@ -49,7 +49,7 @@ function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vect
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
-    @unpack l, r, r_, h, b, c, e0, n, actuator_limits = wg
+    @unpack l, r, r_, h, b, c, e0, n = wg
     q = Vector{Real}(undef, 2)
 
     # determine rotation
