@@ -65,7 +65,7 @@ julia> J = Jacobian(x, RH5_wrist; specsol = [1,2] split = false)
  15.9633   15.9633
  17.737   -17.737
 ```
-When `split = true`, **J**x and **J**q are returned componentwise. 
+When `split = true`, $`\mathbf{J}_x`$ and $`\mathbf{J}_q`$ are returned componentwise. 
 
 ### Performance Analysis
 #### Conditioning

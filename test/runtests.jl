@@ -6,8 +6,8 @@ using Test
     lim = RH5_wrist.actuator_limits
     for q1 in LinRange(lim[1][1], 0.145, 10)
         for q2 in LinRange(lim[2][1], 0.145, 10)
-            x = forward_kinematics([q1, q2], RH5_wrist, solution = [2,1,1])
-            @test inverse_kinematics(x, RH5_wrist, solution = [1,2]) ≈ [q1, q2]
+            x = NovelWrist.forward_kinematics([q1, q2], RH5_wrist, solution = [2,1,1])
+            @test NovelWrist.inverse_kinematics(x, RH5_wrist, solution = [1,2]) ≈ [q1, q2]
         end
     end
 end
@@ -17,7 +17,7 @@ end
     for q1 in LinRange(lim[1][1], 0.145, 10)
         for q2 in LinRange(lim[2][1], 0.145, 10)
             x = NovelWrist.forward_kinematics([q1, q2], RH5_wrist, solution = [2,1,1], intrinsic = false)
-            @test inverse_kinematics(x, RH5_wrist, solution = [1,2], intrinsic = false) ≈ [q1, q2]
+            @test NovelWrist.inverse_kinematics(x, RH5_wrist, solution = [1,2], intrinsic = false) ≈ [q1, q2]
         end
     end
 end
