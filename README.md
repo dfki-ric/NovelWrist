@@ -1,5 +1,5 @@
 # NovelWrist.jl
-A Julia package for the kinematic analysis of the $2S\underbar{P}U+2RSU+1U$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
+A Julia package for the kinematic analysis of the $`2S\underbar{P}U+2RSU+1U`$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
 
 ## Introduction
 ![test](./assets/humanoid_wrist_plane.png?raw=true "CAD design of 2SPU+2RSU+1U mechanism")
