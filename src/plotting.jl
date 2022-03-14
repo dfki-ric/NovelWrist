@@ -3,7 +3,7 @@
 
 Scatter plot of the admissible configurations
 """
-function plot_configuration_space(wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
+function plot_configuration_space(wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 100)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -32,11 +32,9 @@ function plot_configuration_space(wg::WristGeometry; solution::Vector{Int}, intr
     plot!([wg.actuator_limits[1][1], wg.actuator_limits[1][2]], 
           [wg.actuator_limits[2][2], wg.actuator_limits[2][2]], color = :red, lw = 2, label = false)
 
-    if testing
-        return act1, act2 
-    else 
-        return plt
-    end 
+    
+    return plt
+
 end
 
 """
@@ -44,7 +42,7 @@ end
 
 Plots the conditioning for a predefined workspace
 """
-function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -88,13 +86,10 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
 
     plt = heatmap(xrange, yrange, wscond', xlims = α, ylims = γ, aspect_ratio = :equal, size = (600,600), dpi = 300, xlabel = "α [rad]", ylabel = "γ [rad]")
 
-        plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
+    plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
-    if testing
-        return wscond 
-    else 
-        return plt
-    end
+    return plt
+
 end
 
 """
@@ -102,7 +97,7 @@ end
 
 Plots singulartities for a predefined workspace
 """
-function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -147,11 +142,8 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
 
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.2), line = (1, :dash, :lightblue), label = "")
 
-    if testing
-        return wsdet 
-    else 
-        return plt
-    end
+    return plt
+
 end
 
 """
@@ -159,7 +151,7 @@ end
 
 Plots the difference of the condition index (novel and conventional design) for a predefined workspace
 """
-function plot_comparative_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_comparative_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -202,11 +194,8 @@ function plot_comparative_conditioning(wg::WristGeometry; α::Tuple{Real, Real},
     plt = heatmap(xrange, yrange, wscond', xlims = α, ylims = γ, c = my_pal, aspect_ratio = :equal, size = (620,600), dpi = 300, xlabel = "α [rad]", ylabel = "γ [rad]")
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
-    if testing
-        return wscond 
-    else 
-        return plt
-    end
+    return plt
+
 end
 
 """
@@ -214,7 +203,7 @@ end
 
 Plots the singularity curves (novel and conventional design)
 """
-function plot_comparative_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
+function plot_comparative_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 700)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -280,11 +269,8 @@ function plot_comparative_singularities(wg::WristGeometry; α::Tuple{Real, Real}
     # plotting shape of feasible work space
     plot!(Shape(Real.(wsx), Real.(wsy)), fillcolor = plot_color(:blue2, 0.0), line = (1, :dash, :black), label = "")
 
-    if testing
-        return wsdet, wsdet_C 
-    else 
-        return plt
-    end
+    return plt
+
 end 
 
 """
@@ -292,7 +278,7 @@ end
 
 Comparative plot for delivered pure inclination/ pitch torque and speed
 """
-function plot_comparative_torque(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
+function plot_comparative_torque(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 300)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -515,9 +501,6 @@ function plot_comparative_torque(wg::WristGeometry; α::Tuple{Real, Real}, γ::T
         color = :red,
         label = "")
         
-    if testing
-        return maxincltorque_nw, maxtilttorque_nw, maxincltorque_cd, maxtilttorque_cd 
-    else 
-        return plt
-    end    
+    return plt
+  
 end
