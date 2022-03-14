@@ -1,10 +1,10 @@
 # NovelWrist.jl
-A julia package for the kinematic analysis of the 2SU\[RSPU\] + 1U mechanism that is used as wrist for the humaniod robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
+A julia package for the kinematic analysis of the 2SPU+2RSU+1U mechanism that is used as wrist for the humaniod robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
 
 ## Introduction
-![test](./assets/2SPU+2RSU+1U_design_2.png?raw=true "CAD design of 2SU[RSPU] + 1U mechanism")
+![test](./assets/2SPU+2RSU+1U_design_2.png?raw=true "CAD design of 2SPU+2RSU+1U mechanism")
 
-The 2SU\[RSPU\] + 1U design and its kinematic analysis is presented in [link to paper](). This repository contains a more generalized version of the code that was used to perform the kinematic analysis. It offers the functionality to create designs of equal type by specifying geometric parameters and 
+The 2SPU+2RSU+1U design and its kinematic analysis is presented in [link to paper](). This repository contains a more generalized version of the code that was used to perform the kinematic analysis. It offers the functionality to create designs of equal type by specifying geometric parameters and 
 then computing (and visualizing), the differential kinematics as well as the mechanisms conditioning in the work space. As additional feature these characteristics can be compared to the ones of a 2SPU + 1U mechanism, a conventional wrist design.      
 
 ## Installation
@@ -91,7 +91,7 @@ Here, for better visibility, the `actuator_limits` are visualized using a red re
 
 ##### Comparison to conventional wrist design
 
-Compute and plot the **difference of the condition index** between 2SU\[RSPU\] + 1U and 2SPU + 1U mechanism (positive values indicate superior dexterity of the novel design): 
+Compute and plot the **difference of the condition index** between 2SPU+2RSU+1U and 2SPU + 1U mechanism (positive values indicate superior dexterity of the novel design): 
 
 ```jl
 julia> plot_conditioning_C(build_wrist, α = (-π, π), γ = (-π, π), resol = 400)
