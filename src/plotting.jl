@@ -1,9 +1,11 @@
 """
-    plot_configuration_space(wg::WristGeometry; solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100)
+    plot_configuration_space(wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 100)
 
 Scatter plot of the admissible configurations
 """
-function plot_configuration_space(wg::WristGeometry; solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
+function plot_configuration_space(wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 100, testing::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     act1 = fill(NaN, (resol^2, ))
     act2 = fill(NaN, (resol^2, ))
@@ -38,11 +40,13 @@ function plot_configuration_space(wg::WristGeometry; solution::Vector{Int} = [1,
 end
 
 """
-    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200)
 
 Plots the conditioning for a predefined workspace
 """
-function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -94,11 +98,13 @@ function plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{R
 end
 
 """
-    plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200)
 
 Plots singulartities for a predefined workspace
 """
-function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -149,11 +155,13 @@ function plot_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{
 end
 
 """
-    plot_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200)
+    plot_comparative_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,1], intrinsic::Bool = true, resol::Int = 200)
 
 Plots the difference of the condition index (novel and conventional design) for a predefined workspace
 """
-function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+function plot_comparative_conditioning(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 200, testing::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -202,11 +210,13 @@ function plot_conditioning_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple
 end
 
 """
-    plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000)
+    plot_comparative_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 5000)
 
 Plots the singularity curves (novel and conventional design)
 """
-function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
+function plot_comparative_singularities(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 5000, testing::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)
@@ -278,11 +288,11 @@ function plot_singularities_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tupl
 end 
 
 """
-    plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300)
+    plot_comparative_torque(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 300)
 
 Comparative plot for delivered pure inclination/ pitch torque and speed
 """
-function plot_torque_C(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int} = [1,2], intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
+function plot_comparative_torque(wg::WristGeometry; α::Tuple{Real, Real}, γ::Tuple{Real, Real}, solution::Vector{Int}, intrinsic::Bool = true, resol::Int = 300, testing::Bool = false)
 
     xrange = LinRange(α[1], α[2], resol)
     yrange = LinRange(γ[1], γ[2], resol)

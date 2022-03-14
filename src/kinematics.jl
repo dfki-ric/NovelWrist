@@ -47,7 +47,9 @@ location of point k to avoid multiple evaluation. The solution is specified by '
 """
 function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool) 
 
-    @unpack l, r, r_, h, b, c, e0, n = wg
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
+
+    @unpack l, r, r_, h, b, c, e0, n, actuator_limits = wg
     q = Vector{Real}(undef, 2)
 
     # determine rotation
@@ -79,6 +81,8 @@ end
 Retrieving the end-effector orientation, given the solution for the actuator lengths 'q'.
 """
 function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int})
+
+    @assert length(solution) == 3 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     @unpack l, r, r_, h, b, c, e0, n = wg
     k = Vector{Vector{Real}}(undef, 2)
@@ -116,6 +120,9 @@ end
 Constraint equation depending on the end-effector rotation 'x' and actuator lengths 'q'.
 """
 function constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
+
     @unpack l, r, r_, h, b, c, e0, n = wg
     con = Vector{Real}(undef, 2)
 
@@ -148,6 +155,8 @@ end
 Differential kinematics of the constraints.
 """
 function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool, split::Bool = false)
+
+    @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
     q = inverse_kinematics(x, wg, solution = solution, intrinsic = intrinsic)
 
