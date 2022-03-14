@@ -45,7 +45,7 @@ end
 Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
 location of point k to avoid multiple evaluation. The solution is specified by 'solution'. 
 """
-function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool) 
+function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true) 
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -80,7 +80,7 @@ end
 
 Retrieving the end-effector orientation, given the solution for the actuator lengths 'q'.
 """
-function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int})
+function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true)
 
     @assert length(solution) == 3 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -97,7 +97,11 @@ function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vect
 
     Ring, (t, u, v, w) = PolynomialRing(QQ, ["t", "u", "v", "w"], ordering = :degrevlex)
 
-    R = [v -w 0; w v 0; 0 0 1]*[1 0 0; 0 t -u; 0 u t]
+    if intrinsic
+        R = [v -w 0; w v 0; 0 0 1]*[1 0 0; 0 t -u; 0 u t]
+    else
+        R = [t -u 0; u t 0; 0 0 1]*[1 0 0; 0 v -w; 0 w v]
+    end
 
     eq1 = dot(R*Rational.(e0[1]) - Rational.(k[1]), R*Rational.(e0[1]) - Rational.(k[1])) - Rational(l[1]^2)
     eq2 = dot(R*Rational.(e0[2]) - Rational.(k[2]), R*Rational.(e0[2]) - Rational.(k[2])) - Rational(l[2]^2)
@@ -109,7 +113,7 @@ function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vect
 
     _, sol  = msolve(II, info_level = 0);
 
-    return atan(Float64(sol[solution[3]][2]), Float64(sol[solution[3]][1])), atan(Float64(sol[solution[3]][4]), Float64(sol[solution[3]][3]))
+    return [atan(Float64(sol[solution[3]][2]), Float64(sol[solution[3]][1])), atan(Float64(sol[solution[3]][4]), Float64(sol[solution[3]][3]))]
 
 end
 
@@ -119,7 +123,7 @@ end
 
 Constraint equation depending on the end-effector rotation 'x' and actuator lengths 'q'.
 """
-function constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool)
+function constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool = true)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -154,7 +158,7 @@ end
 
 Differential kinematics of the constraints.
 """
-function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool, split::Bool = false)
+function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, split::Bool = false)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -177,7 +181,7 @@ end
 Inverse kinematics of the comparative 2UPS + 1U mechanism - simply computing
 Euclidean distance given the end-effector orientation 'x'
 """
-function inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool)
+function inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool = true)
 
     @unpack b, e0 = wg
     q = Vector{Real}(undef, 2)
@@ -204,7 +208,7 @@ end
 
 Comparative 2UPS + 1U mechanism constraint equation depending on end-effector orientation 'x' and actuator lengths 'q'.
 """
-function constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool)
+function constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool = true)
     @unpack b, e0 = wg
     con = Vector{Real}(undef, 2)
 
@@ -230,7 +234,7 @@ end
 
 Differential kinematics of the constraints of comparative 2UPS + 1U mechanism.
 """
-function Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool, split::Bool = false)
+function Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool = true, split::Bool = false)
 
     q = inverse_kinematics_C(x, wg, intrinsic = intrinsic)
 
