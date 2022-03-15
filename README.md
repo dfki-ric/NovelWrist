@@ -1,5 +1,11 @@
 # NovelWrist.jl
-A Julia package for the kinematic analysis of the $`2S\underbar{P}U+2RSU+1U`$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html). 
+A Julia package for the kinematic analysis of the $`2S\underbar{P}U+2RSU+1U`$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html) and accepted for 
+- C. Stoeffler, A. Fernandez, H. Peters, M. Schilling and S. Kumar: *Kinematic Analysis of a Novel Humanoid Wrist Parallel Mechanism*, **Advances in Robot Kinematics 2022** (see [ARK 2022](https://ark2022.com/)).
+
+**Maintainers:**
+- Christoph Stoeffler [christoph.stoeffler@dfki.de](mailto:christoph.stoeffler@dfki.de)
+- Adriano Fernandez [adriano.del_rio_fernandez@dfki.de](mailto:adriano.del_rio_fernandez@dfki.de)
+
 
 ## Introduction
 ![test](./assets/humanoid_wrist_plane.png?raw=true "CAD design of $`2S\underbar{P}U+2RSU+1U`$ mechanism")
@@ -112,7 +118,7 @@ julia> plot_torque_C(RH5_wrist, α = (-π, π), γ = (-π, π), solution = [1,2]
     Maximum inclination torque: 62.94 Nm, correspondent inclination velocity: 6.36 rad/s, 
     Tilt range: -0.97/0.98 rad, 
     Maximum tilt torque: 56.38 Nm, correspondent tilt velocity: 7.09 rad/s
-
+s
     Pure inclination/tilt characteristics - comparative design:
     Inclination range: -0.74/1.76 rad, 
     Maximum inclination torque: 59.86 Nm, correspondent inclination velocity: 6.68 rad/s, 
@@ -121,4 +127,5 @@ julia> plot_torque_C(RH5_wrist, α = (-π, π), γ = (-π, π), solution = [1,2]
 ```
 ![test](./assets/torque_and_speed.png?raw=true "Comparison of torque and speed at pure inclination/ tilt")
 
-
+##### Acknowledgements
+This work was partially supported from the projects VeryHuman (FKZ01IW20004) and TransFIT (FKZ 50RA1701) funded by the German Aerospace Center (DLR) with federal funds from the Federal Ministry of Education and Research (BMBF) and Federal Ministry of Economic Affairs and Energy (BMWi) respectively.
