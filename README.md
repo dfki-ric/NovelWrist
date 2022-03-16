@@ -1,5 +1,5 @@
 # NovelWrist.jl
-A Julia package for the kinematic analysis of the $`2S\underbar{P}U+2RSU+1U`$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html) and accepted for 
+A Julia package for the kinematic analysis of the $`2SU[RS\underbar{P}U]+1U`$ mechanism that is used as wrist mechanism for the humanoid robot RH5v2, developed at the [DFKI Robotics Innovation Center](https://robotik.dfki-bremen.de/en/startpage.html) and accepted for 
 - C. Stoeffler, A. Fernandez, H. Peters, M. Schilling and S. Kumar: *Kinematic Analysis of a Novel Humanoid Wrist Parallel Mechanism*, **Advances in Robot Kinematics 2022** (see [ARK 2022](https://ark2022.com/)).
 
 **Maintainers:**
@@ -93,7 +93,7 @@ Here, for better visibility, the `actuator_limits` are visualized using a red re
 
 #### Comparison to Conventional Wrist Designs
 
-Computes and plots the **difference of the condition index** between $`2S\underbar{P}U+2RSU+1U`$ and $`2S\underbar{P}U+1U`$ mechanism (positive values indicate increased dexterity of the novel design): 
+Computes and plots the **difference of the condition index** between $`2SU[RS\underbar{P}U]+1U`$ and $`2S\underbar{P}U+1U`$ mechanism (positive values indicate increased dexterity of the novel design): 
 
 ```jl
 julia> plot_comparative_conditioning(RH5_wrist, α = (-π, π), γ = (-π, π), solution = [1,2], resol = 400)
