@@ -21,7 +21,7 @@ end
 Returns the intersection points that arise from the problem of circle-sphere intersection that is given by
 the sphere with center 's' and radius 't' and the circle with center 'cp', radius 'r', and the vector normal to the circle plane 'n'.  
 """
-function circle_sphere_intersection(s::Vector{<:Real}, t::Real, cp::Vector{<:Real}, n::Vector{<:Real}, r::Real)
+function circle_sphere_intersection(s::Vector, t, cp::Vector, n::Vector, r)
 
     # computing projecting vector
     η = dot((cp - s), n)*n
@@ -45,11 +45,14 @@ end
 Retrieving inverse kinematics solution from point end-effector rotation 'x' and returns the
 location of point k to avoid multiple evaluation. The solution is specified by 'solution'. 
 """
-function inverse_kinematics(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true) 
+function inverse_kinematics(x::Vector, wg::Vector; solution::Vector{Int}, intrinsic::Bool = true) 
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
-    @unpack l, r, r_, h, b, c, e0, n = wg
+   # unpacking the vector onto the geometry variables
+   l, r, r_, h = wg[1:4]
+   b, c, e0, n = wg[5:8]
+
     q = Vector{Real}(undef, 2)
 
     # determine rotation
@@ -80,11 +83,14 @@ end
 
 Retrieving the end-effector orientation, given the solution for the actuator lengths 'q'.
 """
-function forward_kinematics(q::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true)
+function forward_kinematics(q::Vector{<:Real}, wg::Vector; solution::Vector{Int}, intrinsic::Bool = true)
 
     @assert length(solution) == 3 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
-    @unpack l, r, r_, h, b, c, e0, n = wg
+    # unpacking the vector onto the geometry variables
+    l, r, r_, h = wg[1:4]
+    b, c, e0, n = wg[5:8]
+
     k = Vector{Vector{Real}}(undef, 2)
     m = Vector{Vector{Real}}(undef, 2)
 
@@ -123,12 +129,15 @@ end
 
 Constraint equation depending on the end-effector rotation 'x' and actuator lengths 'q'.
 """
-function constraints(x::Vector, q::Vector, wg::WristGeometry, solution::Vector{Int}, intrinsic::Bool = true)
+function constraints(x::Vector, q::Vector, wg::Vector, solution::Vector{Int}, intrinsic::Bool = true)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
-    @unpack l, r, r_, h, b, c, e0, n = wg
-    con = Vector{Real}(undef, 2)
+    # unpacking the vector onto the geometry variables
+    l, r, r_, h = wg[1:4]
+    b, c, e0, n = wg[5:8]
+
+    con = Vector{Any}(undef, 2)
 
     # determine rotation
     if intrinsic
@@ -158,7 +167,7 @@ end
 
 Differential kinematics of the constraints.
 """
-function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, intrinsic::Bool = true, split::Bool = false)
+function constraint_jacobian(x::Vector{<:Real}, wg::Vector; solution::Vector{Int}, intrinsic::Bool = true, split::Bool = false)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
@@ -171,9 +180,9 @@ function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, i
     if split
         return Jx, Jq
     else
-        return Matrix{Real}(-inv(Jx)*Jq)
+        return -inv(Jx)*Jq
     end
-end
+end      
 
 """
     inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool)
@@ -181,9 +190,11 @@ end
 Inverse kinematics of the comparative 2UPS + 1U mechanism - simply computing
 Euclidean distance given the end-effector orientation 'x'
 """
-function inverse_kinematics_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool = true)
+function inverse_kinematics_2SPU1U(x::Vector{<:Real}, wg::Vector; intrinsic::Bool = true)
 
-    @unpack b, e0 = wg
+    # unpacking the vector onto the geometry variables
+    b, e0 = wg[5], wg[7]
+    
     q = Vector{Real}(undef, 2)
 
     # determine rotation
@@ -208,8 +219,11 @@ end
 
 Comparative 2UPS + 1U mechanism constraint equation depending on end-effector orientation 'x' and actuator lengths 'q'.
 """
-function constraints_C(x::Vector, q::Vector, wg::WristGeometry, intrinsic::Bool = true)
-    @unpack b, e0 = wg
+function constraints_2SPU1U(x::Vector, q::Vector, wg::Vector, intrinsic::Bool = true)
+    
+    # unpacking the vector onto the geomtry variables
+    b, e0 = wg[5], wg[7]
+    
     con = Vector{Real}(undef, 2)
 
     # determine rotation
@@ -234,7 +248,7 @@ end
 
 Differential kinematics of the constraints of comparative 2UPS + 1U mechanism.
 """
-function Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool = true, split::Bool = false)
+function Jacobian_2SPU1U(x::Vector{<:Real}, wg::Vector; intrinsic::Bool = true, split::Bool = false)
 
     q = inverse_kinematics_C(x, wg, intrinsic = intrinsic)
 
@@ -245,6 +259,6 @@ function Jacobian_C(x::Vector{<:Real}, wg::WristGeometry; intrinsic::Bool = true
     if split
         return Jx, Jq
     else
-        return Matrix{Real}(-inv(Jx)*Jq)
+        return -inv(Jx)*Jq
     end
 end

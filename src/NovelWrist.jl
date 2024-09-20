@@ -9,9 +9,11 @@ using StaticArrays
 using PolygonOps
 using Oscar;   
 
+using JuMP
+using Ipopt
+
 # Includes 
-include("geometrictypes.jl")
-include("helperfunctions.jl")
+include("utils.jl")
 include("kinematics.jl")
 include("plotting.jl")
 

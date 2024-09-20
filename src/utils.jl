@@ -19,3 +19,15 @@ function nonNaNmin(A)
     idxMin = findfirst(==(Amin), A)
     return A[idxMin], idxMin
 end
+
+function workspace_conditioning(wg::Vector{VariableRef}; solution::Vector{Int}, res::Int = 200)
+    wscond = 0.
+    # sampling over entire workspace
+    for i in range(-π, π, length = res)
+        for j in range(-π, π, length = res)
+            J = constraint_jacobian([i,j], wg, solution = solution)
+            wscond[i,j] = 1/cond(Matrix{Real}(J*J'))
+        end
+    end
+    return wscond
+end
