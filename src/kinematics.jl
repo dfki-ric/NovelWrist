@@ -30,10 +30,10 @@ function circle_sphere_intersection(s::Vector, t, cp::Vector, n::Vector, r)
     # reducing length to center line
     δp = δ*(0.5 + (r^2 - t^2 + dot(η, η))/2dot(δ, δ))
     # and vector orthogonal to that
-    if dot(δp, δp) > r^2
+    if !isa(δp, Vector{NonlinearExpr}) && dot(δp, δp) > r^2
         p = [NaN, NaN, NaN]
     else
-        p = LinearAlgebra.cross(δp/norm(δp), n*√(r^2 - dot(δp, δp)))
+        p = LinearAlgebra.cross(δp/mynorm(δp), n*√(r^2 - dot(δp, δp)))
     end
 
     return (cp + δp + p, cp + δp - p)
@@ -53,7 +53,7 @@ function inverse_kinematics(x::Vector, wg::Vector; solution::Vector{Int}, intrin
    l, r, r_, h = wg[1:4]
    b, c, e0, n = wg[5:8]
 
-    q = Vector{Real}(undef, 2)
+    q = Vector{Any}(undef, 2)
 
     # determine rotation
     if intrinsic
