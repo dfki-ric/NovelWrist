@@ -3,15 +3,15 @@
 
 General rotation matrices for x/ y/ z axis, respectively
 """
-function Rx(ϕ::Real)
+function Rx(ϕ)
     Rx = [1 0 0; 0 cos(ϕ) -sin(ϕ); 0 sin(ϕ) cos(ϕ)]
 end
 
-function Ry(ϕ::Real)
+function Ry(ϕ)
     Ry = [cos(ϕ) 0 sin(ϕ); 0 1 0; -sin(ϕ) 0 cos(ϕ)]
 end
 
-function Rz(ϕ::Real)
+function Rz(ϕ)
     Rz = [cos(ϕ) -sin(ϕ) 0; sin(ϕ) cos(ϕ) 0; 0 0 1]
 end
 
@@ -51,7 +51,8 @@ function inverse_kinematics(x::Vector, wg::Vector; solution::Vector{Int}, intrin
 
    # unpacking the vector onto the geometry variables
    l, r, r_, h = wg[1:4]
-   b, c, e0, n = wg[5:8]
+   b, c, n = wg[5:7]
+   e0 = [[0.027, 0, -0.030], [-0.027, 0, -0.030]]
 
     q = Vector{Any}(undef, 2)
 
@@ -89,7 +90,7 @@ function forward_kinematics(q::Vector{<:Real}, wg::Vector; solution::Vector{Int}
 
     # unpacking the vector onto the geometry variables
     l, r, r_, h = wg[1:4]
-    b, c, e0, n = wg[5:8]
+    b, c, n = wg[5:7]
 
     k = Vector{Vector{Real}}(undef, 2)
     m = Vector{Vector{Real}}(undef, 2)
@@ -135,7 +136,8 @@ function constraints(x::Vector, q::Vector, wg::Vector, solution::Vector{Int}, in
 
     # unpacking the vector onto the geometry variables
     l, r, r_, h = wg[1:4]
-    b, c, e0, n = wg[5:8]
+    b, c, n = wg[5:7]
+    e0 = [[0.027, 0, -0.030], [-0.027, 0, -0.030]]
 
     con = Vector{Any}(undef, 2)
 
@@ -167,7 +169,7 @@ end
 
 Differential kinematics of the constraints.
 """
-function constraint_jacobian(x::Vector{<:Real}, wg::Vector; solution::Vector{Int}, intrinsic::Bool = true, split::Bool = false)
+function constraint_jacobian(x::Vector, wg::Vector; solution::Vector{Int}, intrinsic::Bool = true, split::Bool = false)
 
     @assert length(solution) == 2 && all([s in Set([1,2]) for s in solution]) "Solution vector incorrect!"
 
