@@ -171,7 +171,11 @@ function Jacobian(x::Vector{<:Real}, wg::WristGeometry; solution::Vector{Int}, i
     if split
         return Jx, Jq
     else
-        return Matrix{Real}(-inv(Jx)*Jq)
+        if any(isnan.(Jx))
+            return [NaN NaN; NaN NaN]
+        else
+            return Matrix{Real}(-inv(Jx)*Jq)
+        end
     end
 end
 

@@ -8,7 +8,7 @@ A Julia package for the kinematic analysis of the $`2S\underline{P}U+2RSU+1U`$ m
 
 
 ## Introduction
-![test](./assets/humanoid_wrist_plane.png?raw=true "CAD design of $`2S\underbar{P}U+2RSU+1U`$ mechanism")
+![test](./assets/humanoid_wrist_plane.png?raw=true "CAD design of $`2S\underline{P}U+2RSU+1U`$ mechanism")
 
 The here presented 2-DOF mechanism for inclination and tilt possesses two double closed-loop chains and allows increased range of motion compared to a classical $`2S\underbar{P}U+1U`$
 
@@ -93,7 +93,7 @@ Here, for better visibility, the `actuator_limits` are visualized using a red re
 
 #### Comparison to Conventional Wrist Designs
 
-Computes and plots the **difference of the condition index** between $`2S\underbar{P}U+2RSU+1U`$ and $`2S\underbar{P}U+1U`$ mechanism (positive values indicate increased dexterity of the novel design): 
+Computes and plots the **difference of the condition index** between $`2S\underline{P}U+2RSU+1U`$ and $`2S\underline{P}U+1U`$ mechanism (positive values indicate increased dexterity of the novel design): 
 
 ```jl
 julia> plot_comparative_conditioning(RH5_wrist, α = (-π, π), γ = (-π, π), solution = [1,2], resol = 400)
